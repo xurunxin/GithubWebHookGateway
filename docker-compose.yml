@@ -1,0 +1,29 @@
+services:
+  github-webhook-relay:
+    image: registry.nkit.top/openclaw/github-webhook-relay:latest
+    container_name: github-webhook-relay
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: production
+      HTTP_ADDR: 0.0.0.0:8080
+
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET}
+      OPENCLAW_AGENT_TOKEN: ${OPENCLAW_AGENT_TOKEN}
+      ADMIN_TOKEN: ${ADMIN_TOKEN}
+
+      SQLITE_PATH: /data/relay.db
+
+      EVENT_MAX_RETRY: 10
+      EVENT_RETRY_INITIAL_SECONDS: 5
+      EVENT_RETRY_MAX_SECONDS: 300
+      EVENT_DELIVERY_BATCH_SIZE: 10
+
+      WS_WRITE_TIMEOUT_SECONDS: 10
+      WS_READ_TIMEOUT_SECONDS: 90
+      WS_PING_INTERVAL_SECONDS: 30
+
+      LOG_LEVEL: info
+    volumes:
+      - ./data:/data
